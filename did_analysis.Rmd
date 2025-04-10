@@ -1,0 +1,40 @@
+---
+title: "public transit"
+output: html_document
+date: "2025-04-10"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r my first project, include=FALSE}
+# Load libraries
+library(tidyverse)
+
+# set working directory
+setwd("/Users/ganzorig/Library/Mobile Documents/com~apple~CloudDocs/Data and R/Github/First example project")
+
+# Load the data
+data <- read_csv("transit_policy_data.csv")
+
+# Create DiD variables
+data <- data %>%
+  mutate(post = ifelse(year == 2020, 1, 0),
+         did = post * treatment_group)
+
+# Run the DiD regression
+model <- lm(commute_time ~ treatment_group + post + did, data = data)
+summary(model)
+
+# Plot average commute times
+data %>%
+  group_by(year, treatment_group) %>%
+  summarise(avg_commute = mean(commute_time)) %>%
+  ggplot(aes(x = factor(year), y = avg_commute, fill = factor(treatment_group))) +
+  geom_col(position = "dodge") +
+  labs(title = "Commute Time Before and After Transit Policy",
+       x = "Year", y = "Average Commute Time",
+       fill = "Treatment Group") +
+  theme_minimal()
+```
