@@ -1,0 +1,5 @@
+region_id,year,treatment_group,commute_time
+1,2019,0,40
+1,2020,0,38
+2,2019,1,42
+2,2020,1,36
